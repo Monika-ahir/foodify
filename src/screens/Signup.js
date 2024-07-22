@@ -85,7 +85,7 @@ export default function Signup() {
 
       <div className="container">
         <form
-          className="w-50 m-auto mt-5 border bg-dark border-white rounded"
+          className="w-50 m-auto mt-5 border text-white bg-dark border-white rounded"
           onSubmit={handleSubmit}
         >
           <div className="m-3">

@@ -1,13 +1,13 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatchCart, useCart } from "./ContextReducer";
-// import { Dropdown, DropdownButton } from 'react-bootstrap';
+
 export default function Card(props) {
   let data = useCart();
-
   let navigate = useNavigate();
   const [qty, setQty] = useState(1);
   const [size, setSize] = useState("");
+  const [buttonText, setButtonText] = useState("Add to Cart");
   const priceRef = useRef();
 
   let options = props.options || {};
@@ -15,32 +15,26 @@ export default function Card(props) {
   let foodItem = props.foodItem || {};
   const dispatch = useDispatchCart();
 
-  // useEffect(() => {
-  //   console.log("Card Props:", props); // Debug log
-  // }, [props]);
-
   const handleClick = () => {
     if (!localStorage.getItem("token")) {
       navigate("/login");
     }
   };
+
   const handleQty = (e) => {
     setQty(e.target.value);
   };
+
   const handleOptions = (e) => {
     setSize(e.target.value);
   };
-  const handleAddToCart = async () => {
-    let food = [];
-    for (const item of data) {
-      if (item.id === foodItem._id) {
-        food = item;
 
-        break;
-      }
-    }
+  const handleAddToCart = async () => {
+    let food = data.find((item) => item.id === foodItem._id);
+
     console.log(food);
     console.log(new Date());
+    
     if (food) {
       if (food.size === size) {
         await dispatch({
@@ -49,8 +43,7 @@ export default function Card(props) {
           price: finalPrice,
           qty: qty,
         });
-        return;
-      } else if (food.size !== size) {
+      } else {
         await dispatch({
           type: "ADD",
           id: foodItem._id,
@@ -61,26 +54,30 @@ export default function Card(props) {
           img: props.imgSrc,
         });
         console.log("Size different so simply ADD one more to the list");
-        return;
       }
-      return;
+    } else {
+      await dispatch({
+        type: "ADD",
+        id: foodItem._id,
+        name: foodItem.name,
+        price: finalPrice,
+        qty: qty,
+        size: size,
+      });
     }
 
-    await dispatch({
-      type: "ADD",
-      id: foodItem._id,
-      name: foodItem.name,
-      price: finalPrice,
-      qty: qty,
-      size: size,
-    });
+    setButtonText("Added");
+
+    setTimeout(() => {
+      setButtonText("Add to Cart");
+    }, 2000);
   };
 
   useEffect(() => {
     setSize(priceRef.current.value);
   }, []);
 
-  let finalPrice = qty * parseInt(options[size]); //This is where Price is changing
+  let finalPrice = qty * parseInt(options[size]);
 
   return (
     <div>
@@ -123,22 +120,20 @@ export default function Card(props) {
                 );
               })}
             </select>
-            <div className=" d-inline ms-2 h-100 w-20 fs-5">
+            <div className="d-inline ms-2 h-100 w-20 fs-5">
               ₹{finalPrice}/-
             </div>
           </div>
           <hr></hr>
           <button
-            className={`btn justify-center ms-2 `}
+            className={`btn justify-center ms-2`}
             style={{ backgroundColor: "#00a8ff", color: "black" }}
             onClick={handleAddToCart}
           >
-            Add to Cart
+            {buttonText}
           </button>
-          {/* <button className={`btn btn-danger justify-center ms-2 ${btnEnable ? "" : "disabled"}`} onClick={handleRemoveCart}>Remove</button> */}
         </div>
       </div>
     </div>
   );
 }
-//

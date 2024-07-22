@@ -1,3 +1,4 @@
+import '../styles/Cart.css';
 import React from "react";
 import Delete from "@mui/icons-material/Delete";
 import { useCart, useDispatchCart } from "../components/ContextReducer";
@@ -7,7 +8,7 @@ export default function Cart() {
   if (data.length === 0) {
     return (
       <div>
-        <div className="m-5 w-100 text-center fs-3">The Cart is Empty!</div>
+        <div className="m-5 w-100 text-white text-center fs-3">The Cart is Empty!</div>
       </div>
     );
   }
@@ -43,7 +44,7 @@ export default function Cart() {
     <div>
       {console.log(data)}
       <div className="container m-auto mt-5 table-responsive  table-responsive-sm table-responsive-md">
-        <table className="table table-hover ">
+        <table className="table">
           <thead className=" fs-4" style={{ color: "#2abaff" }}>
             <tr>
               <th scope="col">#</th>
@@ -54,7 +55,7 @@ export default function Cart() {
               <th scope="col"></th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className="text-white">
             {data.map((food, index) => (
               <tr>
                 <th scope="row">{index + 1}</th>

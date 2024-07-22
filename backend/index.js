@@ -1,13 +1,22 @@
-global.foodData = require("./db")(function call(err, data, CatData) {
-  // console.log(data)
-  if (err) console.log(err);
-  global.foodData = data;
-  global.foodCategory = CatData;
-});
-
 const express = require("express");
+const connectDB = require('./db.js');
+require('dotenv').config();
+
 const app = express();
-const port = 5000;
+const port = process.env.PORT || 5500;
+
+// Initialize global variables for food data and categories
+let globalFoodData;
+let globalFoodCategory;
+
+// Connect to the database
+connectDB()
+  .then(({ foodData, categoryData }) => {
+    globalFoodData = foodData;
+    globalFoodCategory = categoryData;
+  })
+  .catch(err => console.error('Error initializing app:', err));
+
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
   res.header(
@@ -16,17 +25,18 @@ app.use((req, res, next) => {
   );
   next();
 });
+
 app.use(express.json());
 
 app.get("/", (req, res) => {
-  res.send("Hello World!");
+  res.send("Hello!");
 });
 
 app.use("/api/auth", require("./Routes/Auth"));
 
 app.post("/api/foodData", (req, res) => {
   try {
-    res.send([global.foodData, global.foodCategory]);
+    res.send([globalFoodData, globalFoodCategory]);
   } catch (error) {
     console.error(error.message);
     res.status(500).send("Server Error");
