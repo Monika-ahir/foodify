@@ -1,7 +1,7 @@
 import '../styles/Cart.css';
 import React from "react";
-import Delete from "@mui/icons-material/Delete";
 import { useCart, useDispatchCart } from "../components/ContextReducer";
+import { FaTrash } from 'react-icons/fa';
 export default function Cart() {
   let data = useCart();
   let dispatch = useDispatchCart();
@@ -12,10 +12,10 @@ export default function Cart() {
       </div>
     );
   }
-  // const handleRemove = (index)=>{
-  //   console.log(index)
-  //   dispatch({type:"REMOVE",index:index})
-  // }
+  const handleRemove = (index)=>{
+    console.log("REMOVE ITEM",index)
+    dispatch({type:"REMOVE",index:index})
+  }
 
   const handleCheckOut = async () => {
     let userEmail = localStorage.getItem("userEmail");
@@ -57,7 +57,7 @@ export default function Cart() {
           </thead>
           <tbody className="text-white">
             {data.map((food, index) => (
-              <tr>
+              <tr key={index}>
                 <th scope="row">{index + 1}</th>
                 <td>{food.name}</td>
                 <td>{food.qty}</td>
@@ -65,11 +65,7 @@ export default function Cart() {
                 <td>{food.price}</td>
                 <td>
                   <button type="button" className="btn p-0">
-                    <Delete
-                      onClick={() => {
-                        dispatch({ type: "REMOVE", index: index });
-                      }}
-                    />
+                    <FaTrash color="white" onClick={() => handleRemove(index)} />
                   </button>{" "}
                 </td>
               </tr>
@@ -77,7 +73,7 @@ export default function Cart() {
           </tbody>
         </table>
         <div>
-          <h1 className="fs-2">Total Price: {totalPrice}/-</h1>
+          <h1 className="fs-2 text-white">Total Price: {totalPrice}/-</h1>
         </div>
         <div>
           <button

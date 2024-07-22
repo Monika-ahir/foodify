@@ -30,6 +30,10 @@ export default function Card(props) {
   };
 
   const handleAddToCart = async () => {
+    if (!localStorage.getItem("token")) {
+      navigate("/login");
+      return; // Exit the function if the user is not logged in
+    }
     let food = data.find((item) => item.id === foodItem._id);
 
     console.log(food);
